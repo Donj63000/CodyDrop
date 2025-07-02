@@ -18,7 +18,6 @@ class DropCalc(tk.Tk):
         cumulative=default_cumulative,
     ):
         super().__init__()
-        # Ensure the whole window adopts the dark background right away
         self.configure(bg=BG)
 
         self.group_prob = group_prob
@@ -27,11 +26,10 @@ class DropCalc(tk.Tk):
         self.title("Dofus Rétro – Calculateur de Drop")
         self.minsize(560, 420)
 
-        # Cl\xe9 = nom affich\xe9 ; Valeur = tuple(taux_decimal, lock_PP)
         self.resources: dict[str, tuple[float | None, int]] = {
             "Vulbis\xa0(0,001\u202f%)":    (0.00001, 800),
             "Turquoise\xa0(0,02\u202f%)":  (0.0002,  800),
-            "Personnalisé":                (None,    0),   # sera g\xe9r\xe9 \xe0 part
+            "Personnalisé":                (None,    0),
         }
 
         self._style_ttk()
@@ -45,7 +43,7 @@ class DropCalc(tk.Tk):
         notebook.add(self.tab_calc, text="Calcul")
 
         try:
-            import matplotlib  # noqa: F401
+            import matplotlib
             from matplotlib.figure import Figure
             from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
             self._Figure = Figure
@@ -224,7 +222,6 @@ class DropCalc(tk.Tk):
             self.base_entry.insert(0, f"{rate * 100:.6f}")
             self.base_entry.config(state="disabled")
         else:
-            # « Personnalisé » → l’utilisateur saisit la valeur
             self.base_entry.config(state="normal")
 
     def _parse_pp(self):
@@ -254,13 +251,10 @@ class DropCalc(tk.Tk):
             if n_sim < 1:
                 raise ValueError("Combats simulés \u2265\u202f1.")
 
-            # -- probabilité par combat --
             rate, lock_pp = self.resources[self.dofus_var.get()]
-            if rate is None:            # cas « Personnalisé »
-                rate = base_rate        # déjà saisi dans base_entry
+            if rate is None:
+                rate = base_rate
             total_pp = sum(pp_values)
-
-            # Si le total de PP est inférieur au lock → probabilité 0
             p_fight = 0.0 if total_pp < lock_pp else self.group_prob(rate, pp_values)
             need = self.fights_needed(target_p, p_fight)
             cumu = self.cumulative(p_fight, n_sim)
@@ -275,27 +269,22 @@ class DropCalc(tk.Tk):
             messagebox.showerror("Erreur", str(e))
 
     def _cumulative(self, p_fight: float, n: int) -> float:
-        """Wrapper around the provided cumulative function."""
         return self.cumulative(p_fight, n)
 
     def _update_graph(self, p_fight: float) -> None:
         self.ax.clear()
 
-        # Données
         x_vals = range(1, 501)
         y_vals = [self._cumulative(p_fight, n) * 100 for n in x_vals]
 
-        # Courbe rouge
         self.ax.plot(x_vals, y_vals, color=ACCENT, linewidth=2)
 
-        # Axes / ticks
         self.ax.set_xlabel("Combats", color=FG_TXT)
         self.ax.set_ylabel("Probabilité cumulée (%)", color=FG_TXT)
         self.ax.tick_params(colors=FG_TXT)
         for spine in self.ax.spines.values():
             spine.set_color(FG_TXT)
 
-        # Fond / grille
         self.ax.set_facecolor(AX_BG)
         self.ax.set_ylim(0, 100)
         self.ax.grid(True, color=GRID, linestyle="--", linewidth=0.5)
@@ -331,7 +320,6 @@ class DropCalc(tk.Tk):
         tip.geometry(f"+{x}+{y}")
 
     def _refresh_resource_menu(self) -> None:
-        """Reconstruit le OptionMenu après ajout / suppression."""
         menu = self.option_menu_ref
         menu["menu"].delete(0, "end")
         for res in self.resources:
@@ -381,15 +369,11 @@ class DropCalc(tk.Tk):
 
         ttk.Button(dlg, text="Enregistrer", style="Accent.TButton", command=save)\
            .grid(row=3, column=0, columnspan=2, pady=10, sticky="ew")
-
-# ---------------------------------------------------------------------------
-#  Couleurs (dark / rouge)
-# ---------------------------------------------------------------------------
-BG: Final[str] = "#1a1a1a"   # fond fenêtre
-FG_TXT: Final[str] = "#f0f0f0"   # texte général
-ACCENT: Final[str] = "#e74c3c"   # rouge accent (boutons + courbe)
-AX_BG: Final[str] = "#212121"   # fond du graphique
-GRID: Final[str] = "#444444"   # grille claire
+BG: Final[str] = "#1a1a1a"
+FG_TXT: Final[str] = "#f0f0f0"
+ACCENT: Final[str] = "#e74c3c"
+AX_BG: Final[str] = "#212121"
+GRID: Final[str] = "#444444"
 FONT: Final[tuple[str, int]] = ("Segoe UI", 10)
 
 __all__ = ["DropCalc"]
