@@ -4,8 +4,19 @@ from tkinter import ttk, messagebox
 from itertools import repeat
 from typing import Final
 
+from calc.core import (
+    group_prob as default_group_prob,
+    fights_needed as default_fights_needed,
+    cumulative as default_cumulative,
+)
+
 class DropCalc(tk.Tk):
-    def __init__(self, group_prob, fights_needed, cumulative):
+    def __init__(
+        self,
+        group_prob=default_group_prob,
+        fights_needed=default_fights_needed,
+        cumulative=default_cumulative,
+    ):
         super().__init__()
         # Ensure the whole window adopts the dark background right away
         self.configure(bg=BG)
