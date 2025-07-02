@@ -1,6 +1,5 @@
 import math
 from functools import reduce
-from itertools import repeat
 
 from graph import DropCalc
 
