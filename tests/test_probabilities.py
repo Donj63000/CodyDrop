@@ -4,7 +4,6 @@ import sys
 
 import pytest
 
-# Dynamically load the module since its filename contains a hyphen
 root = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(root))
 module_path = root / "test-cody.py"
@@ -14,7 +13,6 @@ spec.loader.exec_module(cody)
 
 
 def test_indiv_prob_typical():
-    """individual probability with 100 PP and 0.02% base rate"""
     prob = cody.indiv_prob(0.0002, 100)
     assert prob == pytest.approx(0.0002)
 

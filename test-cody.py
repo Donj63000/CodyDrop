@@ -1,4 +1,3 @@
-# Import core probability functions
 from graph import DropCalc
 from calc.core import (
     indiv_prob,
@@ -7,9 +6,6 @@ from calc.core import (
     cumulative,
 )
 
-# --------------------------------------------------
-#  ---  LANCEMENT  ---------------------------------
-# --------------------------------------------------
 
 if __name__ == "__main__":
     app = DropCalc(group_prob, fights_needed, cumulative)
