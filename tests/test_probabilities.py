@@ -4,7 +4,7 @@ import sys
 
 import pytest
 
-# Dynamically load the module since its filename contains a hyphen
+
 root = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(root))
 module_path = root / "test-cody.py"

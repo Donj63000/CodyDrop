@@ -18,7 +18,6 @@ class DropCalc(tk.Tk):
         cumulative=default_cumulative,
     ):
         super().__init__()
-        # Ensure the whole window adopts the dark background right away
         self.configure(bg=BG)
 
         self.group_prob = group_prob
