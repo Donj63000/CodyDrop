@@ -2,12 +2,18 @@
 
 Ce dépôt contient `test-cody.py`, un petit utilitaire graphique pour estimer les probabilités de drop sur Dofus Rétro.
 
-## Installation des dépendances
+## Installation
 
-Python 3 est nécessaire. Toutes les bibliothèques utilisées sont incluses dans Python hormis `matplotlib` (pour le graphique) et `pyinstaller` (pour générer un exécutable). Installez-les avec :
+Python 3 est nécessaire. Depuis ce dossier, installez les dépendances du projet en mode développement&nbsp;:
 
 ```bash
-python -m pip install matplotlib pyinstaller
+python -m pip install -e .
+```
+
+Pour générer un exécutable Windows, installez également `pyinstaller` :
+
+```bash
+python -m pip install pyinstaller
 ```
 
 ## Utilisation avec PyCharm
