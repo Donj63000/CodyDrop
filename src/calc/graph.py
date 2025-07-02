@@ -4,23 +4,24 @@ from tkinter import ttk, messagebox
 from itertools import repeat
 from typing import Final
 
-from calc.core import (
-    group_prob as default_group_prob,
+from .core import (
+    fight_prob as default_fight_prob,
     fights_needed as default_fights_needed,
     cumulative as default_cumulative,
 )
+from .models import GameVersion
 
 class DropCalc(tk.Tk):
     def __init__(
         self,
-        group_prob=default_group_prob,
+        fight_prob=default_fight_prob,
         fights_needed=default_fights_needed,
         cumulative=default_cumulative,
     ):
         super().__init__()
         self.configure(bg=BG)
 
-        self.group_prob = group_prob
+        self.group_prob = fight_prob
         self.fights_needed = fights_needed
         self.cumulative = cumulative
         self.title("Dofus Rétro – Calculateur de Drop")
@@ -118,6 +119,16 @@ class DropCalc(tk.Tk):
         ttk.Label(f, text="Taux base\u202f(%)\u202f:").grid(row=1, column=0, sticky="w")
         self.base_entry = ttk.Entry(f, width=10)
         self.base_entry.grid(row=1, column=1, sticky="ew")
+
+        self.version_var = tk.StringVar(value="RETRO")
+        rb_retro = ttk.Radiobutton(
+            f, text="Rétro", variable=self.version_var, value="RETRO"
+        )
+        rb_v2 = ttk.Radiobutton(
+            f, text="2.x", variable=self.version_var, value="V2"
+        )
+        rb_retro.grid(row=1, column=2, sticky="w", padx=(8, 0))
+        rb_v2.grid(row=2, column=2, sticky="w", padx=(8, 0))
 
         self.mode_var = tk.StringVar(value="total")
         rb_tot = ttk.Radiobutton(
@@ -258,9 +269,14 @@ class DropCalc(tk.Tk):
             if rate is None:            # cas « Personnalisé »
                 rate = base_rate        # déjà saisi dans base_entry
             total_pp = sum(pp_values)
+            version = GameVersion[self.version_var.get()]
 
             # Si le total de PP est inférieur au lock → probabilité 0
-            p_fight = 0.0 if total_pp < lock_pp else self.group_prob(rate, pp_values)
+            p_fight = (
+                0.0
+                if total_pp < lock_pp
+                else self.group_prob(rate, pp_values, monsters=1, version=version)
+            )
             need = self.fights_needed(target_p, p_fight)
             cumu = self.cumulative(p_fight, n_sim)
 
